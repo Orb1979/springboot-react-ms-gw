@@ -1,0 +1,68 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: msf-postgres
+    environment:
+      POSTGRES_DB: msf_customer
+      POSTGRES_USER: msf_user
+      POSTGRES_PASSWORD: msf_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # not needed in development
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: msf-nginx
+    depends_on:
+      - auth-service
+      - customer-service
+    ports:
+      - "80:80"
+#    only needed when needing to connect to API that run on host (outside docker)
+#    extra_hosts:
+#      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./nginx/conf.stg:/etc/nginx/conf.d
+
+  auth-service:
+    image: msf-auth-service:latest
+    container_name: msf-auth-service
+    build:
+      context: ./auth
+      dockerfile: Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      # Configure these for your Auth0 tenant
+      AUTH0_ISSUER_URI: "https://YOUR_DOMAIN/"
+      AUTH0_AUDIENCE: "https://your-api-audience"
+    ports:
+      - "8080:8080"
+
+  customer-service:
+    image: msf-customer-service:latest
+    container_name: msf-customer-service
+    build:
+      context: ./customer
+      dockerfile: Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/msf_customer
+      SPRING_DATASOURCE_USERNAME: msf_user
+      SPRING_DATASOURCE_PASSWORD: msf_password
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+    driver: local
