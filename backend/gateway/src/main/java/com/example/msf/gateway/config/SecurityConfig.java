@@ -11,28 +11,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-      /*
-        Configure HTTP security for the gateway
-         1️ Authorize requests:
-            - Any request matching /public/** is allowed without authentication
-            - All other requests require a valid JWT token
-         2️ Enable OAuth2 Resource Server support:
-            - Validates incoming JWTs
-            - Populates Spring Security context with Authentication object
-            - Makes the JWT available in controllers via @AuthenticationPrincipal Jwt jw
-
-        Incoming request
-              ↓
-        SecurityFilterChain
-              ↓
-        [JWT filter]
-              ↓
-        [Authentication filter]
-              ↓
-        [Authorization filter]
-              ↓
-        Controller
-        */
         http.authorizeHttpRequests(
                 auth -> auth
                     .requestMatchers("/public/**").permitAll()
@@ -42,6 +20,35 @@ public class SecurityConfig {
         return http.build();
     }
 }
+
+/*
+Configure HTTP security for the gateway
+1 Authorize requests:
+  - Any request matching /public/** is allowed without authentication
+  - All other requests require a valid JWT token
+2 Enable OAuth2 Resource Server support:
+  - Validates incoming JWTs,
+      - Discover the authorization server metadata through this OpenID Connect discovery endpoint
+        application.properties > security.oauth2.resourceserver.jwt.issuer-uri
+        For every request:
+          - Verify signature using the public key (with private key on auth0 server)
+          - Check iss matches your issuer-uri
+          - Validate exp, nbf, etc.
+3 Populates Spring Security context with Authentication object
+4 Makes the JWT available in controllers via @AuthenticationPrincipal Jwt jw
+
+Incoming request
+      ↓
+SecurityFilterChain
+      ↓
+[JWT filter]
+      ↓
+[Authentication filter]
+      ↓
+[Authorization filter]
+      ↓
+Controller
+*/
 
 
 

@@ -48,7 +48,7 @@ public class GenericGatewayController {
         // Build WebClient
         WebClient client = webClientBuilder.baseUrl(baseUrl).build();
 
-        // Prepare request
+        // Prepare request spec (method, uri, query params)
         WebClient.RequestBodySpec reqSpec = client
                 .method(org.springframework.http.HttpMethod.valueOf(method))
                 .uri(uriBuilder -> {
@@ -58,6 +58,8 @@ public class GenericGatewayController {
                 });
 
         // Copy headers (except Host)
+        // Host header would be the SPA domain and we don't want to forward to the host, but to the microservice
+        // The WebClient automatically sets the Host header to match the actual downstream URL
         headers.forEach((k, v) -> {
             if (!k.equalsIgnoreCase(HttpHeaders.HOST)) {
                 reqSpec.header(k, v);
@@ -99,3 +101,4 @@ public class GenericGatewayController {
 - No reactive WebFlux controller required:
   - You just need the spring-boot-starter-webflux dependency for WebClient.
 */
+
