@@ -90,6 +90,17 @@ notes:
 - JWT validation happens primarily at API Gateway; microservices may optionally validate.
 - This avoids duplicate steps like “exchange code for JWT” in multiple places.
 
+SPA          NGINX             Gateway                     Microservice
+ |             |                 |                               |
+ |--- HTTP --->|                 |                               |
+ |             |--- HTTP ------->|                               |
+ |             |                 |-- WebClient HTTP request ---> |
+ |             |                 |                               |
+ |             |                 |<-- HTTP response -----------  |
+ |             |<-- HTTP --------|                               |
+ |<-- HTTP --- |                 |                               |
+
+
 ------------------------------------------------------------------------------------------------------------------------
 Run it
 ------------------------------------------------------------------------------------------------------------------------

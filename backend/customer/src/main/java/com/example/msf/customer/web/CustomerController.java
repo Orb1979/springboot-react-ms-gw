@@ -2,6 +2,7 @@ package com.example.msf.customer.web;
 
 import com.example.msf.customer.model.Customer;
 import com.example.msf.customer.repository.CustomerRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,13 +11,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/customer/customers")
+@RequiredArgsConstructor
 public class CustomerController {
-
     private final CustomerRepository repository;
-
-    public CustomerController(CustomerRepository repository) {
-        this.repository = repository;
-    }
 
     @GetMapping()
     public List<Customer> findAll() {
