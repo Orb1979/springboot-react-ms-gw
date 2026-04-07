@@ -3,7 +3,7 @@ Backend Mono-Repo
 
 This directory contains all backend services and infrastructure:
 
-- `gateway/` – Spring Boot OAuth2 client / JWT validator
+- `gateway/` – Spring Boot JWT-validating gateway / reverse proxy
 - `customer/` – Spring Boot CRUD API (PostgreSQL + JPA/Hibernate + Flyway)
 - `nginx/` – Nginx reverse proxy config + Dockerfile
 - `docker-compose.yml` – Local stack: Postgres, nginx, and (optionally) the Spring Boot services
@@ -12,7 +12,7 @@ Services
 --------
 
 - **Gateway-service**
-  - Validates JWTs issued by Auth0
+  - Validates JWTs issued by Auth0 and forwards `/api/{service}/**` requests to downstream services.
 
 - **Customer-service**
   - Simple CRUD rest api

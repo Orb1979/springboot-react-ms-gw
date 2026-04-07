@@ -6,6 +6,15 @@ build/
 dist/
 out/
 
+# Maven
+target/
+
+# Gradle (if applicable)
+build/
+
+# Compiled classes
+*.class
+
 # Production
 *.log
 

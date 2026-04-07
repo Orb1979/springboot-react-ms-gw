@@ -18,6 +18,6 @@ public class GatewayController {
     @GetMapping("/public/gateway")
     public String gatewayTest() {
         // Test public  gateway, no JWT token needed
-        return "Hit public gateway (no JWT required)";
+            return "Hit public gateway (no JWT required)";
     }
 }
