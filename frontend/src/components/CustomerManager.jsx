@@ -71,7 +71,7 @@ export default function CustomerManager() {
             ) : customers.length === 0 ? (
                 <p>No customers yet.</p>
             ) : (
-                <table border="1" cellPadding="8">
+                <table border="1" cellPadding="8" style={{ width: "100%" }}>
                     <thead>
                     <tr>
                         <th>ID</th>
